@@ -1,0 +1,9 @@
+doctype html
+html
+  head
+    title ReportingFileDiffer
+    = stylesheet_link_tag    "reporting_file_differ/application", media: "all"
+    = javascript_include_tag "reporting_file_differ/application"
+    = csrf_meta_tags
+  body
+    = yield
