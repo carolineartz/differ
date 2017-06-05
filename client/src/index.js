@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import store from './store';
 import App from './App';
 
-import './index.css';
 import '../node_modules/grommet/grommet-hpe.min.css';
 
 render(

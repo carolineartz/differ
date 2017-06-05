@@ -11,6 +11,7 @@ import { createReducer } from './utils';
 const initialState = {
   upload: undefined,
   added: [],
+  full: false,
   fileMode: undefined
 };
 
@@ -75,7 +76,10 @@ const handlers = {
     return { added: files };
   },
   [FILE_ADD_SUCCESS]: (state, action) => {
-    return { fileMode: action.file.type };
+    return {
+      fileMode: action.file.type,
+      full: state.added.length === 2
+    };
   },
   [FILE_ADD_FAILURE]: (state, action) => {
     return { fileMode: state.fileMode };

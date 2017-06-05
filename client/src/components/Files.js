@@ -31,11 +31,12 @@ class Files extends Component {
         <Box
           direction='row'
           justify='between'
+          margin='small'
           pad='medium'
-          colorIndex='light-2'
+          colorIndex='neutral-2-a'
           alignContent="between">
           <Box direction="column" justify="center">
-            <Heading strong>1. Select Files</Heading>
+            <Heading strong>Select Files</Heading>
           </Box>
           <Box direction="column" margin="medium" align="center" justify="center">
             <Tiles selectable direction="row" justify="between" margin="small">
@@ -59,6 +60,7 @@ class Files extends Component {
 
 let select = (state) => ({
   files: state.added,
+  full: state.file.full,
   fileMode: state.fileMode
 });
 

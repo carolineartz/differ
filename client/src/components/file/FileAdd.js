@@ -59,7 +59,8 @@ FileAdd.propTypes = {
 
 const select = (state, props) => {
   return {
-    fileMode: state.fileMode,
+    fileMode: state.file.fileMode,
+    full: state.file.full,
     file: state.file
   };
 };
