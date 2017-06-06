@@ -19,16 +19,14 @@ module ReportingFileDiffer
     end
 
     def upload_csv
-      binding.pry
-      # zip_file_path = JSON.parse(request.body.as_json.first)["path"]
       differ = Differ.for(:csv)
+        .config(JSON.parse(params['meta.json']).transform_keys(&:underscore))
+        .add(params['file1.csv'].path)
+        .add(params['file2.csv'].path)
 
-      Zip::File.open(request.body) do |zip|
-        zip.each { |entry| differ.add(entry.get_input_stream.read) }
-      end
+      result = differ.compare
 
-      render status: :ok, content_type: "application/json", body: { data: differ.compare.as_json }.to_json
-      # render json: { data: differ.compare }
+      render status: :ok, content_type: "application/json", body: { data: result.as_json }.to_json
     end
 
     def updload_xlsx

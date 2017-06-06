@@ -31,7 +31,8 @@ class Options extends Component {
       ignoreFieldOptions: undefined,
       rowUniqueIdDisplayed: false,
       ignoreFieldsDisplayed: false,
-      anySelected: false
+      anySelected: false,
+      comparisonData: {}
     }
   }
 
@@ -41,7 +42,6 @@ class Options extends Component {
     Papa.parse(file, {
       complete: ((results, file) => {
         this.setState({file: file, allFields: results})
-        this.state.allFields = results
       })
     })
   }
@@ -49,8 +49,8 @@ class Options extends Component {
   handleClickCompare() {
     const { keyFields, ignoreFields, files } = this.state;
     const meta = { keyFields, ignoreFields };
-
-    compareFiles(files, this.props.fileMode, meta)(this.props.dispatch);
+    const comparison = compareFiles(files, this.props.fileMode, meta)(this.props.dispatch);
+    this.setState({compareData: comparison.data})
   }
 
   handleSelectKeyField({target, option, value}) {
@@ -102,6 +102,8 @@ class Options extends Component {
     const fieldNames = this.state.allFields.data[0] || [];
     const uniqueFieldsText = 'Combination of fields that together create a unique key';
     const ignoreFieldsText = 'Fields that will not contribute to diff results';
+
+    console.log("comparisonData", this.state.comparisonData) // TEMP
 
     return(
       <Section>

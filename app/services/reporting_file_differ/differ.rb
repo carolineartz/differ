@@ -4,29 +4,34 @@ require 'csv'
 module ReportingFileDiffer
   class Differ
     def self.for(type)
-      @opts = {
+      @builder = {
         type: type,
         file_data: []
       }
-      @opts[:comparer] = case type
-                         when :csv then Compare::CSV
-                         when :xslx then Compare::Workbook
-                         end
+      @builder[:comparer] = case type
+                            when :csv then Compare::CSV
+                            when :xslx then Compare::Workbook
+                            end
+      self
+    end
+
+    def self.config(options)
+      @builder[:options] = options.with_indifferent_access
       self
     end
 
     def self.add(entry)
-      case @opts[:type]
+      case @builder[:type]
       when :csv
-        @opts[:file_data] << ::CSV.new(entry)
+        @builder[:file_data] << ::CSV.read(entry)
       when :xlsx
-        @opts[:file_data] << Roo::Excelx.new(entry)
+        @builder[:file_data] << Roo::Excelx.new(entry)
       end
       self
     end
 
     def self.compare
-      @opts[:comparer].new(*@opts[:file_data].first(2)).call
+      @builder[:comparer].new(*@builder[:file_data].first(2)).call(@builder[:options])
     end
   end
 end
