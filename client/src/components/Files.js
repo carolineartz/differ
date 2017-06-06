@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Section from 'grommet/components/Section';
@@ -12,17 +13,10 @@ import FileAdd from './file/FileAdd';
 class Files extends Component {
   constructor(props) {
     super(props);
-    this.handleAdd = this.handleAdd.bind(this);
     this.state = {
       fileMode: undefined,
       added: [],
     }
-  }
-
-  handleAdd(file) {
-    const files = [file, ...this.state.added];
-    const fileMode = file.type;
-    this.setState({added: files, fileMode: fileMode});
   }
 
   render() {
@@ -40,14 +34,14 @@ class Files extends Component {
           </Box>
           <Box direction="column" margin="medium" align="center" justify="center">
             <Tiles selectable direction="row" justify="between" margin="small">
-              <Tile colorIndex="light-1" direction="column" align="center" pad="small" margin="medium">
+              <Tile colorIndex="neutral-2" direction="column" align="center" pad="small" margin="medium">
                 <Box>
-                  <FileAdd onAdd={this.handleAdd} fileMode={this.state.fileMode} />
+                  <FileAdd {...this.props} />
                 </Box>
               </Tile>
-              <Tile colorIndex="light-1" direction="column" align="center" pad="small" margin="medium">
+              <Tile colorIndex="neutral-2" direction="column" align="center" pad="small" margin="medium">
                 <Box>
-                  <FileAdd onAdd={this.handleAdd} fileMode={this.state.fileMode} />
+                  <FileAdd {...this.props} />
                 </Box>
               </Tile>
             </Tiles>
@@ -56,6 +50,11 @@ class Files extends Component {
       </Section>
     );
   }
+}
+
+Files.propTypes = {
+  onAdd: PropTypes.func.isRequired,
+  fileMode: PropTypes.string
 }
 
 let select = (state) => ({

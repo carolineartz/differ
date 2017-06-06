@@ -4,7 +4,7 @@ module ReportingFileDiffer
   class ApplicationController < ActionController::Base
     skip_before_filter :verify_authenticity_token
 
-    before_filter :cors_preflight_check
+    before_action :cors_preflight_check
     after_filter :cors_set_access_control_headers
 
     def show
@@ -19,10 +19,11 @@ module ReportingFileDiffer
     end
 
     def upload_csv
-      zip_file_path = JSON.parse(request.body.as_json.first)["path"]
+      binding.pry
+      # zip_file_path = JSON.parse(request.body.as_json.first)["path"]
       differ = Differ.for(:csv)
 
-      Zip::File.open(File.expand_path(zip_file_path)) do |zip|
+      Zip::File.open(request.body) do |zip|
         zip.each { |entry| differ.add(entry.get_input_stream.read) }
       end
 
