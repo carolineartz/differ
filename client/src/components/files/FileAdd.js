@@ -47,7 +47,7 @@ class FileAdd extends Component {
 
   render() {
     return (
-      <Box basis="small" size="small" align="center" justify="center">
+      <Box margin="none" align="center" justify="center">
         <FileDrop mode={this.state.mode} onDrop={this.handleAdd} />
       </Box>
     );

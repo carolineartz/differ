@@ -15,21 +15,21 @@ const Import = ({onAdd, mode}) => (
       direction='row'
       justify='between'
       margin='small'
-      pad='medium'
+      pad='small'
       colorIndex='light-2'
       alignContent="between"
       className="outline-a1">
       <Box direction="column" justify="center">
         <Heading strong>Select Files</Heading>
       </Box>
-      <Box direction="column" margin="medium" align="center" justify="center">
-        <Tiles selectable direction="row" justify="between" margin="small">
-          <Tile  direction="column" align="center" pad="small" margin="medium">
+      <Box direction="column" margin="none" align="center" justify="center">
+        <Tiles selectable direction="row" flush={false} fill justify="between" margin="none">
+          <Tile  size="xsmall" direction="column" justify="center" align="center" pad="none" margin="medium">
             <Box>
               <FileAdd onAdd={onAdd} mode={mode} />
             </Box>
           </Tile>
-          <Tile direction="column" align="center" pad="small" margin="medium">
+          <Tile size="xsmall" direction="column" justify="center" direction="column" align="center" pad="none" margin="medium">
             <Box>
               <FileAdd onAdd={onAdd} mode={mode} />
             </Box>

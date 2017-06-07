@@ -14,7 +14,8 @@ import Heading from 'grommet/components/Heading';
 import Button from 'grommet/components/Button';
 import CircleQuestionIcon from 'grommet/components/icons/base/CircleQuestion';
 import Tip from 'grommet/components/Tip';
-
+import Tiles from 'grommet/components/Tiles';
+import Tile from 'grommet/components/Tile';
 import { compareFiles } from '../actions/Api';
 
 // TODO: extract field calculations into model
@@ -39,7 +40,7 @@ class Options extends Component {
       rowUniqueIdDisplayed: false,
       ignoreFieldsDisplayed: false,
       anySelected: false,
-      results: {}
+      results: props.results
     }
   }
 
@@ -56,11 +57,7 @@ class Options extends Component {
   handleClickCompare() {
     const { keyFields, ignoreFields, files } = this.state;
     const meta = { keyFields, ignoreFields };
-    const comparison = compareFiles(files, this.props.mode, meta)(this.props.dispatch);
-    if (!comparison.data) return {};
-    const { diffs, options, warnings  } = comparison.data;
-    const results = { diffs, options, warnings };
-    this.setState({ results })
+    compareFiles(files, this.props.mode, meta)(this.props.dispatch);
   }
 
   handleSelectKeyField({target, option, value}) {
@@ -94,20 +91,6 @@ class Options extends Component {
     else this.setState({[id]: true})
   }
 
-  renderFieldsSelected(fields, type) {
-    return (
-      <List selectable={true}>
-        {
-          fields.map(selected =>
-            <ListItem colorIndex="accent-2" margin="small" key={`${type}-${selected}`} separator='none'>
-              <span>{selected}</span>
-            </ListItem>
-          )
-        }
-      </List>
-    )
-  }
-
  // TODO: extract this logic
   handleSearchKeyFields(event) {
     const availableOptions = _.difference(this.state.allFields, this.state.ignoreFieldOptions || []);
@@ -125,34 +108,48 @@ class Options extends Component {
     this.setState({ ignoreFieldOptions: value ? updatedOptions : availableOptions })
   }
 
+  renderFieldsSelected(fields, type) {
+    return (
+      <Tiles flush={false}
+        fill={false}
+        selectable={true}
+      >
+        {
+          fields.map(selected =>
+            <Tile align='center' basis='1/3' key={`${type}-${selected}`} separator='none'>
+               <span>{selected}</span>
+            </Tile>
+          )
+        }
+      </Tiles>
+    )
+  }
+
   render() {
     const allFields = this.state.allFields;
     const uniqueFieldsText = 'Combination of fields that together create a unique key';
     const ignoreFieldsText = 'Fields that will not contribute to diff results';
-    // if (this.state.results) {
 
-    // }
     return(
-      <Section>
+      <Section pad="none">
         <Box
           direction='row'
           justify='between'
           margin='small'
-          pad='medium'
+          pad='small'
           colorIndex='light-2'
           className="outline-a2"
           alignContent="between">
           <Box direction="column">
-            <Box direction="row" justify="center">
+            <Box direction="row" pad={{between: "small"}} justify="center">
               <Heading strong>Select Column Options</Heading>
             </Box>
             {
-              <Box direction="row" justify="center">
+              <Box direction="row" pad="small" align="start" justify="start">
                 { this.state.anySelected &&
                   <Button
                     label='Compare'
-                    primary
-                    disabled={false}
+                    accent
                     onClick={this.handleClickCompare}
                     type="submit"
                    />
@@ -160,7 +157,7 @@ class Options extends Component {
               </Box>
             }
           </Box>
-            <Box direction="column" align="center" pad="medium" basis="medium">
+            <Box direction="column" align="center" pad="none" basis="medium">
             <Heading tag='h4' align='center'>
               Row Unique Identifiers
               <Button id="rowUniqueIdDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, uniqueFieldsText) }} />
@@ -174,7 +171,7 @@ class Options extends Component {
               />
               { this.state.keyFields && this.renderFieldsSelected(this.state.keyFields, 'keyFields') }
             </Box>
-            <Box  direction="column" align="center" pad="medium" basis="medium">
+            <Box  direction="column" align="center" pad="none" basis="medium">
               <Heading tag='h4' align='center'>
                 Ignore Fields
                 <Button id="ignoreFieldsDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, ignoreFieldsText) }} />

@@ -8,7 +8,8 @@ import {
 
 const initialState = {
   uploaded: [],
-  results: {}
+  results: {},
+  rawResults: {}
 };
 
 const handlers = {
@@ -17,11 +18,13 @@ const handlers = {
   },
 
   [FILES_COMPARE_SUCCESS]: (state, action) => {
-    return { results: action.data }
+    const { diffs, options, warnings  } = action.data;
+    const results = { diffs, options, warnings };
+    return { results, rawResults: action.data }
   },
 
   [FILES_COMPARE_FAILURE]: (state, action) => {
-    return { results: {} }
+    return { results: {}, rawResults: {} }
   }
 }
 

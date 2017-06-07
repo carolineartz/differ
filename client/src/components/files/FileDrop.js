@@ -60,9 +60,10 @@ class FileDrop extends Component {
     return (
       <Dropzone
         onDrop={this.handleDrop}
-        multiple={false}>
-        <Box align="center" margin="medium" pad="none">
-          <div>Drop file here or click to select.</div>
+        multiple={false}
+        style={{borderWidth: '2px', borderColor: 'rgb(102, 102, 102)', borderStyle: 'dashed', borderRadius: '5px', height: '98px', width: '96px'}}>
+        <Box align="center" justify="center" alignContent="center" margin="none" pad="none">
+          <div>File</div>
         </Box>
       </Dropzone>
     )
