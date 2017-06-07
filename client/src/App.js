@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import './App.css';
 
 import App from 'grommet/components/App';
-import Files from './components/Files';
+
+import Import from './components/Import';
 import Options from './components/Options';
 
 class Main extends Component {
@@ -11,25 +12,26 @@ class Main extends Component {
     super();
     this.handleAddFile = this.handleAddFile.bind(this);
     this.state = {
-      fileMode: undefined,
-      added: [],
+      mode: undefined,
+      addedFiles: [],
       full: false
     }
   }
 
   handleAddFile(file) {
-    const files = [file, ...this.state.added];
-    const fileMode = file.type;
-    this.setState({added: files, full: files.length === 2, fileMode: fileMode});
+    const files = [file, ...this.state.addedFiles];
+    this.setState({ addedFiles: files, mode: file.type, full: files.length === 2 });
   }
 
   render() {
+    const { mode, full, addedFiles } = this.state;
+
     return (
       <div className='App'>
         <App>
-          <Files onAdd={this.handleAddFile} fileMode={this.state.fileMode} />
+          <Import onAdd={this.handleAddFile} mode={mode} />
           {
-            this.state.full && <Options fileMode={this.state.fileMode} files={this.state.added} />
+            full && <Options files={addedFiles} />
           }
         </App>
       </div>
@@ -38,7 +40,11 @@ class Main extends Component {
 }
 
 let select = (state) => ({
-  files: state.added
+  mode: state.files.mode,
+  addedFiles: state.files.added,
+  full: state.files.full,
+  uploadedFiles: state.api.uploaded,
+  results: state.api.results
 });
 
 export default connect(select)(Main);

@@ -3,8 +3,9 @@ import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 import SVGIcon from 'grommet/components/SVGIcon';
 
-// import Tile from 'grommet/components/Tile';
 import Box from 'grommet/components/Box';
+
+const CSV = 'text/csv'; // TODO: change to exports somewhere
 
 const XlsxFileIcon = () => (
   <SVGIcon viewBox="0 0 131 170"
@@ -34,25 +35,25 @@ const CsvFileIcon = () => (
   </SVGIcon>
 )
 
-// TODO: change to exports somewhere
-// const CSV_MIME = 'text/csv';
-const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
 class FileDrop extends Component {
   constructor(props) {
     super(props);
     this.handleDrop = this.handleDrop.bind(this);
-    this.state = { full: false, fileMode: props.fileMode, file: props.file }
+    this.state = {
+      full: false,
+      mode: props.mode,
+      file: props.file
+    }
   }
 
   handleDrop([file]) {
     const isAccepted = this.props.onDrop(file);
-    this.setState({full: isAccepted});
+    this.setState({ file, full: isAccepted} );
   }
 
   renderFileIcon() {
-    if (this.state.fileMode === XLSX_MIME) return <XlsxFileIcon />;
-    return <CsvFileIcon />
+    if (this.state.mode === CSV) return <CsvFileIcon />;
+    return <XlsxFileIcon />
   }
 
   renderDropZone() {
@@ -74,7 +75,7 @@ class FileDrop extends Component {
 }
 
 FileDrop.propTypes = {
-  fileMode: PropTypes.string,
+  mode: PropTypes.string,
   onDrop: PropTypes.func.isRequired
 }
 

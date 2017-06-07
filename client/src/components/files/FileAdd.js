@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { addFile, addFileFailure, addFileSuccess } from '../../actions/files';
+
 import Box from 'grommet/components/Box';
 
-import { addFile, addFileFailure, addFileSuccess } from '../../actions/file';
 import FileDrop from './FileDrop';
 
 const CSV_MIME = 'text/csv';
@@ -16,28 +17,29 @@ class FileAdd extends Component {
     super(props);
     this.handleAdd = this.handleAdd.bind(this);
     this.state = {
-      fileMode: props.fileMode,
+      mode: props.mode,
       file: undefined
     }
   }
 
   handleAdd(file) {
     this.props.dispatch(addFile(file));
+    const currentMode = this.state.mode;
 
-    const { fileMode } = this.state;
+    // TODO: extract logic
     let accept;
-
-    if (fileMode) accept = file.type === fileMode;
+    if (currentMode) accept = file.type === currentMode;
     else accept = ACCEPTED_TYPES.includes(file.type);
 
     if (accept) {
-      this.props.dispatch(addFileSuccess(file))
+      this.setState({file, mode: file.type});
       this.props.onAdd(file);
-      this.setState({file: file, fileMode: file.type});
+      this.props.dispatch(addFileSuccess(file))
       return true;
     }
     else {
       const error = `File of type: ${file.type} not accepted.`;
+      this.setState({file});
       this.props.dispatch(addFileFailure(file, error));
       return false;
     }
@@ -46,21 +48,20 @@ class FileAdd extends Component {
   render() {
     return (
       <Box basis="small" size="small" align="center" justify="center">
-        <FileDrop fileMode={this.state.fileMode} onDrop={this.handleAdd} />
+        <FileDrop mode={this.state.mode} onDrop={this.handleAdd} />
       </Box>
     );
   }
 }
 
 FileAdd.propTypes = {
-  fileMode: PropTypes.string,
+  mode: PropTypes.string,
   onAdd: PropTypes.func.isRequired
 };
 
 const select = (state, props) => {
   return {
-    fileMode: state.file.fileMode,
-    full: state.file.full,
+    mode: state.files.mode,
     file: state.file
   };
 };

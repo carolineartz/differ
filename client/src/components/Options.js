@@ -15,16 +15,23 @@ import Button from 'grommet/components/Button';
 import CircleQuestionIcon from 'grommet/components/icons/base/CircleQuestion';
 import Tip from 'grommet/components/Tip';
 
-import { compareFiles } from '../actions/file';
+import { compareFiles } from '../actions/Api';
+
+// TODO: extract field calculations into model
 
 class Options extends Component {
   constructor(props) {
     super(props);
+    this.handleSearchIgnoreFields = this.handleSearchIgnoreFields.bind(this);
+    this.handleSearchKeyFields = this.handleSearchKeyFields.bind(this);
+    this.handleSelectKeyField = this.handleSelectKeyField.bind(this)
+    this.handleSelectIgnoreField = this.handleSelectIgnoreField.bind(this);
+    this.handleClickCompare = this.handleClickCompare.bind(this);
 
     this.state = {
-      allFields: { data: [] },
-      fileMode: props.fileMode,
-      files: props.files.map(f => f.file),
+      allFields: [],
+      mode: props.mode,
+      files: props.addedFiles,
       keyFields: [],
       keyFieldOptions: undefined,
       ignoreFields: [],
@@ -32,7 +39,7 @@ class Options extends Component {
       rowUniqueIdDisplayed: false,
       ignoreFieldsDisplayed: false,
       anySelected: false,
-      comparisonData: {}
+      results: {}
     }
   }
 
@@ -41,7 +48,7 @@ class Options extends Component {
 
     Papa.parse(file, {
       complete: ((results, file) => {
-        this.setState({file: file, allFields: results})
+        this.setState({ file: file, allFields: results.data[0] })
       })
     })
   }
@@ -49,12 +56,15 @@ class Options extends Component {
   handleClickCompare() {
     const { keyFields, ignoreFields, files } = this.state;
     const meta = { keyFields, ignoreFields };
-    const comparison = compareFiles(files, this.props.fileMode, meta)(this.props.dispatch);
-    this.setState({compareData: comparison.data})
+    const comparison = compareFiles(files, this.props.mode, meta)(this.props.dispatch);
+    if (!comparison.data) return {};
+    const { diffs, options, warnings  } = comparison.data;
+    const results = { diffs, options, warnings };
+    this.setState({ results })
   }
 
   handleSelectKeyField({target, option, value}) {
-    const fieldNames = this.state.allFields.data[0];
+    const fieldNames = this.state.allFields;
     const ignoreFields = _.difference(this.state.ignoreFields, value);
     const ignoreFieldOptions = _.difference(fieldNames, value);
     const anySelected = ignoreFieldOptions.length !== fieldNames.length;
@@ -68,7 +78,7 @@ class Options extends Component {
   }
 
   handleSelectIgnoreField({target, option, value}) {
-    const fieldNames = this.state.allFields.data[0];
+    const fieldNames = this.state.allFields;
     const keyFields = _.difference(this.state.keyFields, value);
     const keyFieldOptions = _.difference(fieldNames, value);
     this.setState({
@@ -98,13 +108,30 @@ class Options extends Component {
     )
   }
 
+ // TODO: extract this logic
+  handleSearchKeyFields(event) {
+    const availableOptions = _.difference(this.state.allFields, this.state.ignoreFieldOptions || []);
+    const value = event.target.value;
+    const regexp = new RegExp(value, 'i');
+    const updatedOptions = availableOptions.filter(val => regexp.test(val));
+    this.setState({ keyFieldOptions: value ? updatedOptions : availableOptions })
+  }
+
+  handleSearchIgnoreFields(event) {
+    const availableOptions = _.difference(this.state.allFields, this.state.keyFieldOptions || []);
+    const value = event.target.value;
+    const regexp = new RegExp(value, 'i');
+    const updatedOptions = availableOptions.filter(val => regexp.test(val));
+    this.setState({ ignoreFieldOptions: value ? updatedOptions : availableOptions })
+  }
+
   render() {
-    const fieldNames = this.state.allFields.data[0] || [];
+    const allFields = this.state.allFields;
     const uniqueFieldsText = 'Combination of fields that together create a unique key';
     const ignoreFieldsText = 'Fields that will not contribute to diff results';
+    // if (this.state.results) {
 
-    console.log("comparisonData", this.state.comparisonData) // TEMP
-
+    // }
     return(
       <Section>
         <Box
@@ -112,7 +139,8 @@ class Options extends Component {
           justify='between'
           margin='small'
           pad='medium'
-          colorIndex='accent-2-a'
+          colorIndex='light-2'
+          className="outline-a2"
           alignContent="between">
           <Box direction="column">
             <Box direction="row" justify="center">
@@ -125,36 +153,38 @@ class Options extends Component {
                     label='Compare'
                     primary
                     disabled={false}
-                    onClick={this.handleClickCompare.bind(this)}
+                    onClick={this.handleClickCompare}
                     type="submit"
                    />
                 }
               </Box>
             }
           </Box>
-            <Box colorIndex="accent-2-t" direction="column" align="center" pad="medium" basis="medium">
+            <Box direction="column" align="center" pad="medium" basis="medium">
             <Heading tag='h4' align='center'>
               Row Unique Identifiers
               <Button id="rowUniqueIdDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, uniqueFieldsText) }} />
             </Heading>
               <Select placeHolder='None'
-                multiple={true}
-                options={this.state.keyFieldOptions || fieldNames}
+                onSearch={this.handleSearchKeyFields}
+                multiple
+                options={this.state.keyFieldOptions || allFields}
                 value={this.state.keyFields}
-                onChange={this.handleSelectKeyField.bind(this)}
+                onChange={this.handleSelectKeyField}
               />
               { this.state.keyFields && this.renderFieldsSelected(this.state.keyFields, 'keyFields') }
             </Box>
-            <Box colorIndex="accent-2-t" direction="column" align="center" pad="medium" basis="medium">
+            <Box  direction="column" align="center" pad="medium" basis="medium">
               <Heading tag='h4' align='center'>
                 Ignore Fields
                 <Button id="ignoreFieldsDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, ignoreFieldsText) }} />
               </Heading>
               <Select placeHolder='None'
-                multiple={true}
-                options={this.state.ignoreFieldOptions || fieldNames}
+                onSearch={this.handleSearchIgnoreFields}
+                multiple
+                options={this.state.ignoreFieldOptions || allFields}
                 value={this.state.ignoreFields}
-                onChange={this.handleSelectIgnoreField.bind(this)}
+                onChange={this.handleSelectIgnoreField}
               />
               { this.state.ignoreFields && this.renderFieldsSelected(this.state.ignoreFields, 'ignoreFields') }
             </Box>
@@ -175,12 +205,14 @@ class Options extends Component {
 }
 
 Options.propTypes = {
-  fileMode: PropTypes.string
+  mode: PropTypes.string
 }
 
 let select = (state) => ({
-  files: state.file.added,
-  fileMode: state.fileMode
+  uploadedFiles: state.api.uploaded,
+  addedFiles: state.files.added,
+  mode: state.files.mode,
+  results: state.api.results
 });
 
 export default connect(select)(Options);

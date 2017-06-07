@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
-import file from './file';
+import files from './files';
+import api from './api';
 
-export default combineReducers({ file });
+export default combineReducers({ files, api });
 

@@ -25,3 +25,28 @@ html, body, #root, .App {
   position: relative;
   overflow: hidden;
 }
+
+
+.outline-a1 {
+  border: 6px solid #2ad2c9;
+}
+
+.outline-a2 {
+  border: 6px solid #614767;
+}
+
+
+.outline-a1 h1,
+.outline-a1 h2,
+.outline-a1 h3,
+.outline-a1 h4,
+.outline-a1 h5,
+.outline-a1 h6,
+.outline-a2 h1,
+.outline-a2 h2,
+.outline-a2 h3,
+.outline-a2 h4,
+.outline-a2 h5,
+.outline-a2 h6 {
+  color: #425563;
+}
