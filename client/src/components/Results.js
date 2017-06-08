@@ -5,8 +5,8 @@ import ReactJson from 'react-json-view';
 import _ from 'lodash';
 
 import Section from 'grommet/components/Section';
-import Tiles from 'grommet/components/Tiles';
-import Tile from 'grommet/components/Tile';
+// import Tiles from 'grommet/components/Tiles';
+// import Tile from 'grommet/components/Tile';
 import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 import Accordion from 'grommet/components/Accordion';
@@ -21,36 +21,57 @@ import AccordionPanel from 'grommet/components/AccordionPanel';
 import AddCircleIcon from 'grommet/components/icons/base/AddCircle';
 import UpdateIcon from 'grommet/components/icons/base/Update';
 import SubtractCircleIcon from 'grommet/components/icons/base/SubtractCircle';
+import CutIcon from 'grommet/components/icons/base/Cut';
+import LoginIcon from 'grommet/components/icons/base/Login';
+
 import { rawResultResponse, resultResponse  } from './tempResp';
 
-import UpdateTable from './results/UpdateTable';
+// import UpdateTable from './results/UpdateTable';
+// import Updates from './results/Updates';
+import ResultSet from './results/ResultSet';
 
-// TODO: Extract this logic
-const diffsByType = (diffs) => {
+const diffsByType = (diffs) => { // TODO: Extract this logic
   const transformed = _.mapValues(diffs, (value, key, obj) => {
     return { id: key, ...value }
   })
   return { ..._.groupBy(transformed, "diff_type") };
 }
+const formatData = (results, keyFields) => // TODO: Extract logic
+  _.chain(results).keyBy('id').mapValues(o => _.omit(o.fields, keyFields)).value()
 
 class Results extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...diffsByType(props.results.diffs) } // gives me this.state.adds, this.state.delete, this.state.update
-  }
-
-  renderAddsAndDeletes() {
+    this.state = {
+      keyFields: props.rawResults.options.key_fields,
+      ...diffsByType(props.results.diffs) // gives me this.state.add, this.state.delete, this.state.update
+    }
   }
 
   renderUpdates() {
-    const keyFields = this.props.rawResults.options.key_fields; // TODO: get from state?
-    return (
-      <UpdateTable updates={this.state.update} keyFields={keyFields} />
-    )
+    const icon = <UpdateIcon className="icon-color-orange status-icon" />;
+    const data = formatData(this.state.update, this.state.keyFields);
+
+    return <ResultSet label="Updated" rootLabel="updates" icon={icon} resultData={data}/>;
+  }
+
+  renderAdds() {
+    const icon = <LoginIcon className="icon-color-orange status-icon" />;
+    const data = formatData(this.state.add, this.state.keyFields);
+
+    return <ResultSet label="New" rootLabel="adds" icon={icon} resultData={data}/>;
+  }
+
+  renderDeletes() {
+    const icon = <CutIcon className="icon-color-orange status-icon" />;
+    const data = formatData(this.state.delete, this.state.keyFields);
+
+    return <ResultSet label="Removed" rootLabel="deletes" icon={icon} resultData={data}/>;
   }
 
   render() {
-    const { rawResults, results } = this.props;
+    // const { rawResults, results } = this.props;
+    const { update: updates, add: adds, delete: deletes } = this.state;
 
     return (
       <Section>
@@ -64,20 +85,16 @@ class Results extends Component {
           <Box basis="full"  direction="row">
             <Heading tag="h2">Results</Heading>
           </Box>
-            <Accordion active={0} openMulti>
-              {
-                this.state.update &&
-                  <AccordionPanel heading={<div><UpdateIcon className="icon-color-orange status-icon" size="small" /> Updates</div>}>
-                    { this.renderUpdates() }
-                  </AccordionPanel>
-              }
-              {
-                rawResults &&
-                <AccordionPanel heading='Full Results (debug)'>
-                  <ReactJson collapsed src={rawResults} />
-                </AccordionPanel>
-              }
+          { updates && this.renderUpdates() }
+          { adds && this.renderAdds() }
+          { deletes && this.renderDeletes() }
+          <Box basis="full" direction="row">
+            <Accordion>
+              <AccordionPanel heading='Full Results (debug)'>
+                <ReactJson collapsed src={this.props.rawResults} />
+              </AccordionPanel>
             </Accordion>
+          </Box>
         </Box>
       </Section>
     )

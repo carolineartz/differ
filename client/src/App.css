@@ -10,11 +10,14 @@
 .outline-a3 {
   border: 6px solid #4a8388; }
 
+.outline-a1 h1, .outline-a1 h2, .outline-a1 h3, .outline-a1 h4, .outline-a1 h5, .outline-a1 h6, .outline-a2 h1, .outline-a2 h2, .outline-a2 h3, .outline-a2 h4, .outline-a2 h5, .outline-a2 h6, .outline-a3 h1, .outline-a3 h2, .outline-a3 h3, .outline-a3 h4, .outline-a3 h5, .outline-a3 h6 {
+  font-weight: normal; }
+
 .status-icon {
   line-height: 1em;
   position: relative;
-  top: 6px;
-  padding: 2px;
+  top: 8px;
+  padding: 4px;
   margin: 4px; }
 
 .icon-color-orange {
@@ -56,3 +59,17 @@
 
 .grommetux-table th {
   font-weight: 600; }
+
+.expand-all-toggle {
+  font-size: 15px !important; }
+  .expand-all-toggle span:first-child {
+    padding-right: 6px; }
+  .expand-all-toggle span svg {
+    height: 15px;
+    width: 15px;
+    vertical-align: middle !important; }
+
+.result-set-heading {
+  letter-spacing: .04167em; }
+  .result-set-heading svg {
+    margin-right: 15px; }
