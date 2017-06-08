@@ -8,7 +8,7 @@
     "grommet-addons": "^0.3.0",
     "lodash": "^4.17.4",
     "papaparse": "^4.3.2",
-    "prop-types": "^15.5.10",
+    "prop-types": "^15.5.7",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.2",
@@ -18,15 +18,20 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
+    "node-sass-chokidar": "^0.0.2",
     "react-scripts": "0.9.5",
     "redux-devtools-extension": "^2.13.2",
-    "redux-logger": "^3.0.6"
+    "redux-logger": "^3.0.6",
+    "yarn-run-all": "^3.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build; yarn build-rename-css; yarn build-rename-js; yarn build-remove-maps; yarn build-update-index; yarn build-update-asset-manifest",
+    "start-js": "react-scripts start",
+    "start": "NPM_EXECPATH=$npm_execpath npm-run-all -p watch-css start-js",
+    "build": "yarn build-css && react-scripts build; yarn build-rename-css; yarn build-rename-js; yarn build-remove-maps; yarn build-update-index; yarn build-update-asset-manifest",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "build-rename-css": "mv build/static/css/main.*.css build/main.css",
     "build-rename-js": "mv build/static/js/main.*.js build/main.js",
     "build-remove-maps": "rm build/static/js/*.map build/static/css/*.map",

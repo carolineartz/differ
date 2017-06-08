@@ -20,7 +20,7 @@ const Import = ({onAdd, mode}) => (
       alignContent="between"
       className="outline-a1">
       <Box direction="column" justify="center">
-        <Heading strong>Select Files</Heading>
+        <Heading tag="h2">Select Files</Heading>
       </Box>
       <Box direction="column" margin="none" align="center" justify="center">
         <Tiles selectable direction="row" flush={false} fill justify="between" margin="none">
@@ -29,7 +29,7 @@ const Import = ({onAdd, mode}) => (
               <FileAdd onAdd={onAdd} mode={mode} />
             </Box>
           </Tile>
-          <Tile size="xsmall" direction="column" justify="center" direction="column" align="center" pad="none" margin="medium">
+          <Tile size="xsmall" direction="column" justify="center" align="center" pad="none" margin="medium">
             <Box>
               <FileAdd onAdd={onAdd} mode={mode} />
             </Box>

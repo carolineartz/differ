@@ -8,8 +8,6 @@ import Papa from 'papaparse';
 import Section from 'grommet/components/Section';
 import Select from 'grommet/components/Select';
 import Box from 'grommet/components/Box';
-import List from 'grommet/components/List';
-import ListItem from 'grommet/components/ListItem';
 import Heading from 'grommet/components/Heading';
 import Button from 'grommet/components/Button';
 import CircleQuestionIcon from 'grommet/components/icons/base/CircleQuestion';
@@ -142,7 +140,7 @@ class Options extends Component {
           alignContent="between">
           <Box direction="column">
             <Box direction="row" pad={{between: "small"}} justify="center">
-              <Heading strong>Select Column Options</Heading>
+              <Heading tag="h2">Select Column Options</Heading>
             </Box>
             {
               <Box direction="row" pad="small" align="start" justify="start">
