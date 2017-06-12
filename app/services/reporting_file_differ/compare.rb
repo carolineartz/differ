@@ -1,4 +1,5 @@
 require 'csv'
+
 require 'csv-diff'
 require 'awesome_print'
 

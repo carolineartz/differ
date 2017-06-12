@@ -18,22 +18,26 @@ module ReportingFileDiffer
       end
     end
 
-    def upload_csv
+    def compare
       differ = Differ.for(:csv)
         .config(JSON.parse(params['meta.json']).transform_keys(&:underscore))
-        .add(params['file1.csv'].path)
-        .add(params['file2.csv'].path)
+        .add(params['file1'].path)
+        .add(params['file2'].path)
 
       result = differ.compare
 
       render status: :ok, content_type: "application/json", body: { data: result.as_json }.to_json
     end
 
-    def updload_xlsx
-      # @@files << request.body
-      # binding.pry
-      # Differ.for(:xlsx).new(*@@files).call if @@files.compact.size == 2
-      # binding.pry if @@files.compact.size == 2
+    def convert
+      mode = JSON.parse(params['meta.json'])['mode']
+
+      result = if mode.include?('csv')
+                Convert::CSV.new(params['file1.csv'], params['file2.csv']).call
+              else
+                Convert::Workbook.new(params['file1.xlsx'], params['file2.xlsx']).call
+              end
+      render status: :ok, content_type: "application/json", body: { data: result.as_json }.to_json
     end
 
     private

@@ -1,5 +1,13 @@
+@import "./styles/flexboxgrid";
+
 * {
   box-sizing: border-box;
+}
+
+.wrap {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 $color-status-alert: #ff5641;
@@ -30,6 +38,8 @@ $color-accent-light: #96e1d9;
 }
 
 .outline-a1, .outline-a2, .outline-a3 {
+  padding: 20px;
+  margin: 20px 0;
   h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
   }

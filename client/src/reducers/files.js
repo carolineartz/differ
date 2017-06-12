@@ -6,8 +6,6 @@ import {
   FILE_ADD_FAILURE
 } from '../actions/files';
 
-import _ from 'lodash';
-
 const initialState = {
   adding: [],
   added: [],
@@ -20,7 +18,7 @@ const handlers = {
   [FILE_ADD]: (state, action) => {
     let adding = state.adding.slice(0);
     adding.push(action.file);
-    return { adding }
+    return { adding, mode: action.file.type }
   },
 
   [FILE_ADD_SUCCESS]: (state, action) => {
@@ -29,10 +27,10 @@ const handlers = {
 
     return {
       adding: [],
-      added: added,
-      mode: action.file.type,
       lastAdded: action.file,
-      full: added.length === 2
+      full: added.length === 2,
+      mode: action.file.type,
+      added,
     }
   },
 

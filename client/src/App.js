@@ -30,11 +30,14 @@ class Main extends Component {
   }
 
   render() {
-    const { mode, full, addedFiles } = this.state;
+    const { mode, addedFiles } = this.state;
+    const full = this.props.full;
+
     const displayResults = !_.isEmpty(this.props.results);
     return (
       <div className='App'>
-        <App>
+        <App className="wrap container-fluid">
+
           <Import onAdd={this.handleAddFile} mode={mode} />
           {
             full && <Options files={addedFiles} />
@@ -51,8 +54,9 @@ class Main extends Component {
 let select = (state) => ({
   mode: state.files.mode,
   addedFiles: state.files.added,
+  convertedFiles: state.api.convered,
   full: state.files.full,
-  uploadedFiles: state.api.uploaded,
+  uploadedFiles: state.api.sent,
   results: resultResponse,
   rawResults: rawResultResponse
   // results: state.api.results,

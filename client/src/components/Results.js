@@ -1,34 +1,21 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ReactJson from 'react-json-view';
 import _ from 'lodash';
 
-import Section from 'grommet/components/Section';
-// import Tiles from 'grommet/components/Tiles';
-// import Tile from 'grommet/components/Tile';
-import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 import Accordion from 'grommet/components/Accordion';
 import AccordionPanel from 'grommet/components/AccordionPanel';
-// import List from 'grommet/components/List';
-// import ListItem from 'grommet/components/ListItem';
-// import Label from 'grommet/components/Label';
-
-// import Table from 'grommet/components/Table';
-// import TableRow from 'grommet/components/TableRow';
-
-import AddCircleIcon from 'grommet/components/icons/base/AddCircle';
 import UpdateIcon from 'grommet/components/icons/base/Update';
-import SubtractCircleIcon from 'grommet/components/icons/base/SubtractCircle';
 import CutIcon from 'grommet/components/icons/base/Cut';
 import LoginIcon from 'grommet/components/icons/base/Login';
 
+import ResultSet from './results/ResultSet';
+
 import { rawResultResponse, resultResponse  } from './tempResp';
 
-// import UpdateTable from './results/UpdateTable';
-// import Updates from './results/Updates';
-import ResultSet from './results/ResultSet';
+import { Row, Col } from './layout';
 
 const diffsByType = (diffs) => { // TODO: Extract this logic
   const transformed = _.mapValues(diffs, (value, key, obj) => {
@@ -70,33 +57,28 @@ class Results extends Component {
   }
 
   render() {
-    // const { rawResults, results } = this.props;
     const { update: updates, add: adds, delete: deletes } = this.state;
 
     return (
-      <Section>
-        <Box
-          direction='column'
-          margin='small'
-          pad='small'
-          colorIndex='light-2'
-          alignContent="between"
-          className="outline-a3">
-          <Box basis="full"  direction="row">
-            <Heading tag="h2">Results</Heading>
-          </Box>
-          { updates && this.renderUpdates() }
-          { adds && this.renderAdds() }
-          { deletes && this.renderDeletes() }
-          <Box basis="full" direction="row">
-            <Accordion>
-              <AccordionPanel heading='Full Results (debug)'>
-                <ReactJson collapsed src={this.props.rawResults} />
-              </AccordionPanel>
-            </Accordion>
-          </Box>
-        </Box>
-      </Section>
+      <Row className="outline-a3">
+        <Col defs="col-md-2 col-sm-12">
+          <Heading tag="h2">Results</Heading>
+        </Col>
+        <Col defs="col-xs-12">
+          <Row>
+            { updates && <Col defs="col-xs-12 col-sm">{this.renderUpdates()}</Col> }
+            { adds && <Col defs="col-xs-12 col-sm">{this.renderAdds()}</Col> }
+            { deletes && <Col defs="col-xs-12 col-sm">{this.renderDeletes()}</Col> }
+          </Row>
+        </Col>
+        <Col defs="col-xs-12">
+          <Accordion>
+            <AccordionPanel heading='Full Results (debug)'>
+              <ReactJson collapsed src={this.props.rawResults} />
+            </AccordionPanel>
+          </Accordion>
+        </Col>
+      </Row>
     )
   }
 }

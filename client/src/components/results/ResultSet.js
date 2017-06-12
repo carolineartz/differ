@@ -4,14 +4,11 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import ReactJson from 'react-json-view';
-import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 import Button from 'grommet/components/Button';
-import Anchor from 'grommet/components/Anchor';
-import AddCircleIcon from 'grommet/components/icons/base/AddCircle';
-import SubtractCircleIcon from 'grommet/components/icons/base/SubtractCircle';
-import InspectIcon from 'grommet/components/icons/base/Inspect';
 import ViewIcon from 'grommet/components/icons/base/View';
+
+import { Row, Col } from './../layout';
 
 class ResultSet extends Component {
   constructor(props) {
@@ -24,28 +21,29 @@ class ResultSet extends Component {
     this.setState({collapsed: !this.state.collapsed})
   }
 
-  renderExpandCollapseToggle() {
-    return (
-      <Button className="expand-all-toggle" icon={<ViewIcon />}
-        label='Toggle Expand All'
-        onClick={this.handleClickToggleCollapse}
-        plain={true}
-      />
-    )
-  }
-
   render() {
     const { icon, label, resultData, rootLabel } = this.props;
-    console.log(this.reactJsonView && this.reactJsonView.state.collapsed);
-    return(
-      <Box direction="row" basis="full" separator="bottom">
-        <Heading tag="h3">
-          <div className="result-set-heading">
-            {icon}
-            {label}
-          </div>
-        </Heading>
-        <Box direction='column' justify='center' pad={{horizontal: "medium", vertical: "small"}}>
+
+    return (
+      <Row>
+        <Col defs='col-xs-12'>
+          <Row>
+            <Col defs='col-xs-12'>
+              <Heading style={{display: "inline-block"}} tag="h3">
+                <div className="result-set-heading">
+                  {icon}
+                  {label}
+                </div>
+              </Heading>
+              <Button style={{display: "inline-block"}} className="expand-all-toggle" icon={<ViewIcon />}
+                label='Toggle All'
+                onClick={this.handleClickToggleCollapse}
+                plain={true}
+              />
+            </Col>
+          </Row>
+        </Col>
+        <Col defs='col-xs-12'>
           <ReactJson
             displayDataTypes={false}
             src={resultData}
@@ -54,20 +52,11 @@ class ResultSet extends Component {
             name={`${_.camelCase(rootLabel)}`}
             collapsed={this.state.collapsed}
           />
-        </Box>
-        <Box direction='column' justify='start'>
-        {
-          this.renderExpandCollapseToggle()
-        }
-        </Box>
-      </Box>
+        </Col>
+      </Row>
     )
   }
 }
-
-// const ResultSet = ({label, icon, resultData, rootLabel = label}) => (
-
-// )
 
 ResultSet.propTypes = {
   label: PropTypes.string.isRequired,

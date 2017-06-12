@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 import SVGIcon from 'grommet/components/SVGIcon';
@@ -52,7 +54,7 @@ class FileDrop extends Component {
   }
 
   renderFileIcon() {
-    if (this.state.mode === CSV) return <CsvFileIcon />;
+    if (this.props.mode === CSV) return <CsvFileIcon />;
     return <XlsxFileIcon />
   }
 
@@ -80,4 +82,10 @@ FileDrop.propTypes = {
   onDrop: PropTypes.func.isRequired
 }
 
-export default FileDrop;
+const select = (state) => {
+  return {
+    mode: state.files.mode
+  };
+};
+
+export default connect(select)(FileDrop);

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { addFile, addFileFailure, addFileSuccess } from '../../actions/files';
 
 import Box from 'grommet/components/Box';
+import Heading from 'grommet/components/Heading';
 
 import FileDrop from './FileDrop';
 
@@ -18,7 +19,8 @@ class FileAdd extends Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.state = {
       mode: props.mode,
-      file: undefined
+      file: undefined,
+      allFull: props.allFull
     }
   }
 
@@ -35,19 +37,26 @@ class FileAdd extends Component {
       this.setState({file, mode: file.type});
       this.props.onAdd(file);
       this.props.dispatch(addFileSuccess(file))
-      return true;
     }
     else {
       const error = `File of type: ${file.type} not accepted.`;
       this.setState({file});
       this.props.dispatch(addFileFailure(file, error));
-      return false;
     }
+
+    return accept;
   }
 
   render() {
+    const fileName = this.state.file && this.state.file.name;
+
     return (
       <Box margin="none" align="center" justify="center">
+        { fileName &&
+          <Heading tag="h6">
+            {fileName}
+          </Heading>
+        }
         <FileDrop mode={this.state.mode} onDrop={this.handleAdd} />
       </Box>
     );
@@ -62,7 +71,9 @@ FileAdd.propTypes = {
 const select = (state, props) => {
   return {
     mode: state.files.mode,
-    file: state.file
+    allFull: state.files.full,
+    file: state.file,
+    files: state.files.added
   };
 };
 
