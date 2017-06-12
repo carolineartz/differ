@@ -53,8 +53,8 @@ const handlers = {
 
     return {
       converted: action.data,
-      fileData,
-      dataSets: fileData.dataSets
+      dataSets: fileData.dataSets,
+      fileData
     }
   },
 

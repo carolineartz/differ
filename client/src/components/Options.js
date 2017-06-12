@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
-import ReactJson from 'react-json-view';
 
 import Heading from 'grommet/components/Heading';
 import Button from 'grommet/components/Button';
@@ -15,9 +14,6 @@ import OptionSet from './options/OptionSet';
 
 import { Row, Col } from './layout'
 
-const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-// TODO: extract field calculations into model
 class Options extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +26,6 @@ class Options extends Component {
       ignoreFieldsDisplayed: false,
       anySelected: false,
       results: props.results,
-      excel: props.mode === XLSX_MIME,
       fileData: undefined,
       dataSets: [],
       multi: false
@@ -63,28 +58,13 @@ class Options extends Component {
     const uniqueFieldsText = 'Combination of fields that together create a unique key';
     const ignoreFieldsText = 'Fields that will not contribute to diff results';
 
-    const dataDisplay = this.state.dataSets.map(ds =>
-      <ReactJson
-        key={`${ds.name || 'csv'}`}
-        src={{
-          data1: ds.data1,
-          data2: ds.data2,
-          fields: ds.data1.data[0],
-          name: ds.name
-        }}
-        collapsed
-      />
-    )
-
     const selectDisplay = this.state.dataSets.map((ds, i) =>
       <OptionSet
         key={`${ds.name || 'csv'}-${i}`}
+        id={ds.id}
         name={ds.name}
         fields={ds.data1.data[0]}
-        data={{
-          data1: ds.data1,
-          data2: ds.data2
-        }}
+        dataSet={ds}
       />
     )
 
@@ -119,9 +99,6 @@ class Options extends Component {
             </Col>
           </Row>
           { this.state.fileData && selectDisplay }
-          <Col defs='col-xs-12'>
-            { this.state.fileData && dataDisplay }
-          </Col>
           { this.state.rowUniqueIdDisplayed &&
             <Tip target='rowUniqueIdDisplayed' onClose={() => true}>
               {uniqueFieldsText}

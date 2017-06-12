@@ -131,14 +131,7 @@ $color-accent-light: #96e1d9;
   }
 }
 
-
-// #update-json .data-type-label.hidden {
-//   display: block !important;
-//   width: 100% !important;
-//   height: 1px !important;
-//   border-bottom: 1px solid #ff7b6b;
-
-//   & > & {
-//     background: yellow !important;
-//   }
-// }
+.divider {
+  border-top: 1px solid rgba(0,0,0,.15);
+  margin-top: 2em;
+}

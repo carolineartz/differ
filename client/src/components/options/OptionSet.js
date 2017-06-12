@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import _ from 'lodash';
 
@@ -8,53 +9,41 @@ import Heading from 'grommet/components/Heading';
 
 import { Row, Col } from '../layout'
 
+import { selectKeyField, selectIgnoreField } from './../../actions/options';
 // import { compareFiles } from './../../actions/Api';
 
 class OptionSet extends Component {
   constructor(props) {
     super(props);
-
     this.handleSelectKeyField = this.handleSelectKeyField.bind(this)
     this.handleSelectIgnoreField = this.handleSelectIgnoreField.bind(this);
 
     this.state = {
       anySelected: false,
-      keyFields: [],
-      keyFieldOptions: undefined,
-      ignoreFields: [],
-      ignoreFieldOptions: undefined
+      keys: [],
+      keyOptions: props.fields,
+      ignores: [],
+      ignoreOptions: props.fields,
     }
   }
 
-  handleSelectKeyField({target, option, value}) {
-    const fieldNames = this.props.fields;
-    const ignoreFields = _.difference(this.state.ignoreFields, value);
-    const ignoreFieldOptions = _.difference(fieldNames, value);
-    const anySelected = ignoreFieldOptions.length !== fieldNames.length;
+  componentWillReceiveProps(nextProps) {
+    const { keys, keyOptions, ignores, ignoreOptions } = nextProps;
+    this.setState({ keys, keyOptions, ignores, ignoreOptions })
+  }
 
-    this.setState({
-      keyFields: value,
-      ignoreFields,
-      ignoreFieldOptions,
-      anySelected
-    })
+  handleSelectKeyField({target, option, value}) {
+    this.props.dispatch(selectKeyField(this.props.id, value, this.props.fields));
   }
 
   handleSelectIgnoreField({target, option, value}) {
-    const fieldNames = this.props.fields;
-    const keyFields = _.difference(this.state.keyFields, value);
-    const keyFieldOptions = _.difference(fieldNames, value);
-    this.setState({
-      ignoreFields: value,
-      keyFields,
-      keyFieldOptions
-    })
+    this.props.dispatch(selectIgnoreField(this.props.id, value, this.props.fields));
   }
 
   renderSheetHeader()  {
     return (
       <Col defs="col-xs-12">
-      <hr />
+        <div className='divider' />
         <Heading tag="h5">
           {this.props.name}
         </Heading>
@@ -82,31 +71,42 @@ class OptionSet extends Component {
         <Col defs="col-xs-offset-4 col-xs">
           <Select placeHolder='None'
             multiple
-            options={this.state.keyFieldOptions || this.props.fields}
-            value={this.state.keyFields}
+            options={this.state.keyOptions || this.props.fields}
+            value={this.state.keys}
             onChange={this.handleSelectKeyField}
           />
-          { this.renderFieldsSelected(this.state.keyFields, 'keyFields') }
+          { this.renderFieldsSelected(this.state.keys, 'keys') }
         </Col>
         <Col defs='col-xs'>
           <Select placeHolder='None'
             multiple
-            options={this.state.ignoreFieldOptions || this.props.fields}
-            value={this.state.ignoreFields}
+            options={this.state.ignoreOptions || this.props.fields}
+            value={this.state.ignores}
             onChange={this.handleSelectIgnoreField}
           />
-          { this.state.ignoreFields && this.renderFieldsSelected(this.state.ignoreFields, 'ignoreFields') }
+          { this.renderFieldsSelected(this.state.ignores, 'ignoreFields') }
         </Col>
       </Row>
     )
   }
 }
 
-
 OptionSet.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string,
   fields: PropTypes.array.isRequired,
-  data: PropTypes.object.isRequired
+  dataSet: PropTypes.object.isRequired
 }
 
-export default OptionSet;
+const select = (state, props) => {
+  const opts = state.options[props.id] || {};
+  const { keys, keyOptions, ignores, ignoreOptions }  = opts;
+  return {
+    keys,
+    keyOptions,
+    ignores,
+    ignoreOptions
+  }
+}
+
+export default connect(select)(OptionSet);
