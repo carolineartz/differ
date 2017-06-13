@@ -6,11 +6,9 @@ import _ from 'lodash';
 
 import Select from 'grommet/components/Select';
 import Heading from 'grommet/components/Heading';
-
 import { Row, Col } from '../layout'
 
 import { selectKeyField, selectIgnoreField } from './../../actions/options';
-// import { compareFiles } from './../../actions/Api';
 
 class OptionSet extends Component {
   constructor(props) {

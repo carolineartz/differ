@@ -10,9 +10,6 @@ import Import from './components/Import';
 import Options from './components/Options';
 import Results from './components/Results';
 
-// TEMP
-import { rawResultResponse, resultResponse  } from './components/tempResp';
-
 class Main extends Component {
   constructor() {
     super();
@@ -30,21 +27,15 @@ class Main extends Component {
   }
 
   render() {
-    const { mode, addedFiles } = this.state;
-    const full = this.props.full;
+    const { mode } = this.state;
+    const { full, resultSets } = this.props;
 
-    const displayResults = !_.isEmpty(this.props.results);
     return (
       <div className='App'>
         <App className="wrap container-fluid">
-
           <Import onAdd={this.handleAddFile} mode={mode} />
-          {
-            full && <Options files={addedFiles} />
-          }
-          {
-            displayResults && <Results />
-          }
+          { full && <Options /> }
+          { !_.isEmpty(resultSets) && <Results /> }
         </App>
       </div>
     )
@@ -52,15 +43,9 @@ class Main extends Component {
 }
 
 let select = (state) => ({
-  mode: state.files.mode,
-  addedFiles: state.files.added,
-  convertedFiles: state.api.convered,
   full: state.files.full,
-  uploadedFiles: state.api.sent,
-  results: resultResponse,
-  rawResults: rawResultResponse
-  // results: state.api.results,
-  // rawResults: state.api.rawResults
+  resultSets: state.api.resultSets,
+  rawResultResponse: state.api.rawResultResponse
 });
 
 export default connect(select)(Main);

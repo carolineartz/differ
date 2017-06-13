@@ -46,12 +46,20 @@ export const convertFilesFailure = (error) => {
   return { type: FILES_CONVERT_FAILURE, error }
 }
 
-export function compareFiles(files, mode, meta, dispatch) {
-  dispatch({ type: FILES_SEND, files: files.map(f => f.name), meta: meta });
-  const data = formData(files, mode, meta);
-  const request = new Request(COMPARE_ENDPOINT, { method: 'POST', body: data });
+export function compareFiles(dataSets, options, dispatch) {
+  dataSets.forEach(ds => {
+    const id = ds.id;
+    ds.keyFields = options[id].keys;
+    ds.ignoreFields = options[id].ignores;
+  });
 
-  return postFiles(files, request, dispatch)
+  dispatch({ type: FILES_SEND, files: dataSets });
+
+  const data = new FormData();
+  data.append('data.json', JSON.stringify(dataSets));
+  const request = new Request(COMPARE_ENDPOINT, {method: 'POST', body: data });
+
+  return postFiles(data, request, dispatch)
     .then(json => {
       return dispatch(compareFilesSuccess(json.data))
     })

@@ -6,7 +6,6 @@ import { addFile, addFileFailure, addFileSuccess } from '../../actions/files';
 
 import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
-
 import FileDrop from './FileDrop';
 
 const CSV_MIME = 'text/csv';

@@ -18,25 +18,18 @@ module ReportingFileDiffer
       end
     end
 
-    def compare
-      differ = Differ.for(:csv)
-        .config(JSON.parse(params['meta.json']).transform_keys(&:underscore))
-        .add(params['file1'].path)
-        .add(params['file2'].path)
+    def convert
+      mode = JSON.parse(params['meta.json'])['mode']
+      type = mode.include?('csv') ? :csv : :xlsx
 
-      result = differ.compare
+      result = Differ.converter.for(type).new(params["file1.#{type}"], params["file2.#{type}"]).call
 
       render status: :ok, content_type: "application/json", body: { data: result.as_json }.to_json
     end
 
-    def convert
-      mode = JSON.parse(params['meta.json'])['mode']
+    def compare
+      result = Differ.compare(JSON.parse(params['data.json']))
 
-      result = if mode.include?('csv')
-                Convert::CSV.new(params['file1.csv'], params['file2.csv']).call
-              else
-                Convert::Workbook.new(params['file1.xlsx'], params['file2.xlsx']).call
-              end
       render status: :ok, content_type: "application/json", body: { data: result.as_json }.to_json
     end
 

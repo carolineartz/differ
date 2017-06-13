@@ -3,6 +3,15 @@ require 'roo'
 
 module ReportingFileDiffer
   module Convert
+    # TODO: error handle
+    def self.for(type)
+      if type === :csv
+        CSV
+      else
+        Workbook
+      end
+    end
+
     class Workbook
       def initialize(wb1, wb2)
         @wb1 = wb1
@@ -22,8 +31,8 @@ module ReportingFileDiffer
         workbook1.sheets.each_with_object([]) do |name, sheet_data|
           sheet_data << {
             name: name,
-            "#{@wb1.original_filename}" => workbook1.tap { |wb| wb.default_sheet = name }.to_csv,
-            "#{@wb2.original_filename}" => workbook2.tap { |wb| wb.default_sheet = name }.to_csv
+            @wb1.original_filename => workbook1.tap { |wb| wb.default_sheet = name }.to_csv,
+            @wb2.original_filename => workbook2.tap { |wb| wb.default_sheet = name }.to_csv
           }
         end
       end
@@ -39,8 +48,8 @@ module ReportingFileDiffer
         {
           workbooks: [@file1.original_filename, @file2.original_filename],
           sheets: [{
-             "#{@file1.original_filename}" => ::CSV.open(@file1.path).read.map { |x| x.join(',') }.join("\n"),
-             "#{@file2.original_filename}" => ::CSV.open(@file2.path).read.map { |x| x.join(',') }.join("\n")
+            @file1.original_filename => ::CSV.open(@file1.path).read.map { |x| x.join(',') }.join("\n"),
+            @file2.original_filename => ::CSV.open(@file2.path).read.map { |x| x.join(',') }.join("\n")
           }]
         }
       end

@@ -22,15 +22,3 @@ export default class FileData {
     })
   }
 }
-
-
-// {
-//   workbooks: [@wb1.original_filename, @wb2.original_filename],
-//   sheets: [
-//     {
-//       name: ,
-//       [@wb1.original_filename]: ...,
-//       [@wb2.original_filename]: ...
-//     }
-//   ]
-// }

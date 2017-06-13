@@ -16,12 +16,8 @@ gemspec
 gem "slim-rails"
 
 group :development, :test do
-  gem 'guard', require: false
-  gem 'guard-rspec', require: false
-  gem 'rspec-rails', '~> 3.5.0'
+  gem 'foreman'
   gem 'pry-rails'
   gem 'puma', '~> 3.0'
-  gem 'foreman'
-  gem "better_errors"
-  gem "binding_of_caller"
+  gem 'rspec-rails', '~> 3.5.0'
 end

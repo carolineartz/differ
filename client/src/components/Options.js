@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
@@ -8,11 +7,10 @@ import Heading from 'grommet/components/Heading';
 import Button from 'grommet/components/Button';
 import CircleQuestionIcon from 'grommet/components/icons/base/CircleQuestion';
 import Tip from 'grommet/components/Tip';
+import { Row, Col } from './layout'
 
 import { compareFiles } from '../actions/Api';
 import OptionSet from './options/OptionSet';
-
-import { Row, Col } from './layout'
 
 class Options extends Component {
   constructor(props) {
@@ -20,12 +18,9 @@ class Options extends Component {
     this.handleClickCompare = this.handleClickCompare.bind(this);
 
     this.state = {
-      mode: props.mode,
-      files: props.addedFiles,
       rowUniqueIdDisplayed: false,
       ignoreFieldsDisplayed: false,
-      anySelected: false,
-      results: props.results,
+      resultSets: props.resultSets,
       fileData: undefined,
       dataSets: [],
       multi: false
@@ -43,9 +38,8 @@ class Options extends Component {
   }
 
   handleClickCompare() {
-    const { keyFields, ignoreFields, files } = this.state;
-    const meta = { keyFields, ignoreFields };
-    compareFiles(files, this.props.mode, meta, this.props.dispatch);
+    const { dataSets, options, dispatch } = this.props;
+    compareFiles(dataSets, options, dispatch);
   }
 
   toggleTip(el, text) {
@@ -74,7 +68,7 @@ class Options extends Component {
           <Row>
             <Col defs='col-xs'>
               <Heading tag="h2">Select Column Options</Heading>
-                { this.state.anySelected &&
+                { this.props.allHaveKeys &&
                   <div>
                     <Button
                       label='Compare'
@@ -115,19 +109,25 @@ class Options extends Component {
   }
 }
 
-Options.propTypes = {
-  mode: PropTypes.string
-}
+let select = (state, props) => {
+  const { resultSets, fileData, dataSets } = state.api;
+  const keys = _.map(state.options, (opt => opt.keys));
+  const allHaveKeys = dataSets.length &&
+                      dataSets.length === keys.length &&
+                      keys.every(k => k.length)
+  const anyHaveKeys = !!_.flatten(keys).length
 
-let select = (state) => ({
-  uploadedFiles: state.api.uploaded,
-  addedFiles: state.files.added,
-  mode: state.files.mode,
-  results: state.api.results,
-  fileData: state.api.fileData,
-  dataSets: state.api.dataSets,
-  multi: state.api.dataSets > 1
-});
+  return {
+    mode: state.files.mode,
+    resultSets,
+    fileData,
+    dataSets,
+    allHaveKeys, // for later support of select options are the same for all sets
+    anyHaveKeys, // for later support of select options are the same for all sets
+    options: state.options,
+    multi: dataSets > 1
+  }
+}
 
 export default connect(select)(Options);
 

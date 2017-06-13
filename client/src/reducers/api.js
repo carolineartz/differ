@@ -1,4 +1,5 @@
 import { createReducer } from './utils';
+import _ from 'lodash';
 
 import {
   FILES_SEND,
@@ -14,8 +15,8 @@ const initialState = {
   sending: [],
   sent: [],
   converted: {},
-  results: {},
-  rawResults: {},
+  resultSets: [],
+  rawResultResponse: [],
   fileData: undefined,
   dataSets: []
 };
@@ -38,16 +39,6 @@ const handlers = {
     return { sending: [] }
   },
 
-  [FILES_COMPARE_SUCCESS]: (state, action) => {
-    const { diffs, options, warnings  } = action.data;
-    const results = { diffs, options, warnings };
-    return { results, rawResults: action.data }
-  },
-
-  [FILES_COMPARE_FAILURE]: (state, action) => {
-    return { results: {}, rawResults: {} }
-  },
-
   [FILES_CONVERT_SUCCESS]: (state, action) => {
     const fileData = new FileData(action.data)
 
@@ -59,23 +50,47 @@ const handlers = {
   },
 
   [FILES_CONVERT_FAILURE]: (state, action) => {
-    console.log('state', state)
-    console.log('action', action)
     return { converted: {} }
+  },
+
+  [FILES_COMPARE_SUCCESS]: (state, action) => {
+    const resultSets = action.data.map(ds => {
+      const { diffs, warnings, key_fields: keyFields } = ds;
+      const { update: updates, add: adds, delete: deletes } = diffsByType(diffs);
+
+      return {
+        warnings,
+        keyFields,
+        updates: formatResult(updates, keyFields),
+        adds: formatResult(adds, keyFields),
+        deletes: formatResult(deletes, keyFields)
+      }
+    });
+
+    return { resultSets, rawResultResponse: action.data }
+  },
+
+  [FILES_COMPARE_FAILURE]: (state, action) => {
+    return { resultSets: [], rawResultResponse: {} }
   }
 }
 
+function diffsByType(diffs) {
+  const transformed = _.mapValues(diffs, ((value, key, obj) => ({
+      id: key,
+      ...value
+      })
+    ))
+  return { ..._.groupBy(transformed, "diff_type") };
+}
+
+
+function formatResult(result, keyFields) {
+  return _
+    .chain(result)
+    .keyBy('id')
+    .mapValues(o => _.omit(o.fields, keyFields))
+    .value()
+}
+
 export default createReducer(initialState, handlers);
-
-
-// {
-//   workbooks: [@wb1.original_filename, @wb2.original_filename],
-//   sheets: [
-//     {
-//       name: ,
-//       [@wb1.original_filename]: ...,
-//       [@wb2.original_filename]: ...
-//     }
-//   ]
-// }
-

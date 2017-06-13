@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
 import SVGIcon from 'grommet/components/SVGIcon';
-
 import Box from 'grommet/components/Box';
 
 const CSV = 'text/csv'; // TODO: change to exports somewhere

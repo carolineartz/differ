@@ -1,67 +1,53 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import _ from 'lodash';
 
-import ReactJson from 'react-json-view';
-import Heading from 'grommet/components/Heading';
-import Button from 'grommet/components/Button';
-import ViewIcon from 'grommet/components/icons/base/View';
+import UpdateIcon from 'grommet/components/icons/base/Update';
+import CutIcon from 'grommet/components/icons/base/Cut';
+import LoginIcon from 'grommet/components/icons/base/Login';
 
-import { Row, Col } from './../layout';
+import { Row } from './../layout';
 
-class ResultSet extends Component {
-  constructor(props) {
-    super(props)
-    this.handleClickToggleCollapse = this.handleClickToggleCollapse.bind(this);
-    this.state = {collapsed: true}
-  }
+import Result from './Result';
 
-  handleClickToggleCollapse() {
-    this.setState({collapsed: !this.state.collapsed})
-  }
-
-  render() {
-    const { icon, label, resultData, rootLabel } = this.props;
-
-    return (
-      <Row>
-        <Col defs='col-xs-12'>
-          <Row>
-            <Col defs='col-xs-12'>
-              <Heading style={{display: "inline-block"}} tag="h3">
-                <div className="result-set-heading">
-                  {icon}
-                  {label}
-                </div>
-              </Heading>
-              <Button style={{display: "inline-block"}} className="expand-all-toggle" icon={<ViewIcon />}
-                label='Toggle All'
-                onClick={this.handleClickToggleCollapse}
-                plain={true}
-              />
-            </Col>
-          </Row>
-        </Col>
-        <Col defs='col-xs-12'>
-          <ReactJson
-            displayDataTypes={false}
-            src={resultData}
-            displayObjectSize={false}
-            indentWidth={3}
-            name={`${_.camelCase(rootLabel)}`}
-            collapsed={this.state.collapsed}
-          />
-        </Col>
-      </Row>
-    )
-  }
-}
+const iconClassName = "icon-color-orange status-icon";
+const ResultSet = ({updates, adds, deletes}) => (
+  <Row>
+    {
+      !_.isEmpty(updates) &&
+        <Result
+          label="Updated"
+          rootLabel="updates"
+          icon={<UpdateIcon className={iconClassName} />}
+          resultData={updates}
+        />
+    }
+    {
+      !_.isEmpty(adds) &&
+        <Result
+          label="New"
+          rootLabel="adds"
+          icon={<LoginIcon className={iconClassName} />}
+          resultData={adds}
+        />
+    }
+    {
+      !_.isEmpty(deletes) &&
+        <Result
+          label="Removed"
+          rootLabel="deletes"
+          icon={<CutIcon className={iconClassName} />}
+          resultData={deletes}
+        />
+    }
+  </Row>
+);
 
 ResultSet.propTypes = {
-  label: PropTypes.string.isRequired,
-  resultData: PropTypes.object.isRequired,
-  icon: PropTypes.element
+  updates: PropTypes.object,
+  adds: PropTypes.object,
+  deletes: PropTypes.object
 }
 
 export default ResultSet;
