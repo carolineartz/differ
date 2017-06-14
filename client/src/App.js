@@ -28,14 +28,13 @@ class Main extends Component {
 
   render() {
     const { mode } = this.state;
-    const { full, resultSets } = this.props;
 
     return (
       <div className='App'>
         <App className="wrap container-fluid">
           <Import onAdd={this.handleAddFile} mode={mode} />
-          { full && <Options /> }
-          { !_.isEmpty(resultSets) && <Results /> }
+          <Options />
+          <Results />
         </App>
       </div>
     )

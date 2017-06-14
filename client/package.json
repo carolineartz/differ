@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3000/",
   "dependencies": {
+    "classnames": "^2.2.5",
     "grommet": "^1.4.1",
     "lodash": "^4.17.4",
     "papaparse": "^4.3.2",

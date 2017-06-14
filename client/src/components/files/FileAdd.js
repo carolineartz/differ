@@ -8,8 +8,8 @@ import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 import FileDrop from './FileDrop';
 
-const CSV_MIME = 'text/csv';
-const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+import { CSV_MIME, XLSX_MIME } from './../../models/constants';
+
 const ACCEPTED_TYPES = [CSV_MIME, XLSX_MIME];
 
 class FileAdd extends Component {
@@ -52,7 +52,7 @@ class FileAdd extends Component {
     return (
       <Box margin="none" align="center" justify="center">
         { fileName &&
-          <Heading tag="h6">
+          <Heading className="file-name" tag="h6">
             {fileName}
           </Heading>
         }

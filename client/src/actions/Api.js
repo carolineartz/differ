@@ -1,9 +1,5 @@
-const CSV_MIME = 'text/csv';
-const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-const EXTENSION_MAP = {
-  [CSV_MIME]: 'csv',
-  [XLSX_MIME]: 'xlsx'
-}
+import { EXTENSION_MAP } from './../models/constants';
+
 const COMPARE_ENDPOINT = 'http://localhost:3000/reporting_file_differ/diff/compare'; // FIXME: localhost
 const CONVERT_ENDPOINT = 'http://localhost:3000/reporting_file_differ/diff/convert'; // FIXME: localhost
 

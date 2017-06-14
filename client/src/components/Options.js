@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import cx from 'classnames';
 
 import _ from 'lodash';
 
@@ -51,6 +52,15 @@ class Options extends Component {
   render() {
     const uniqueFieldsText = 'Combination of fields that together create a unique key';
     const ignoreFieldsText = 'Fields that will not contribute to diff results';
+    const optionsClassNames = cx({
+      'outline-a2': true,
+      options: true,
+      active: this.props.active
+    });
+
+    const tipButtonClassNames = cx({
+      disabled: !this.props.active
+    });
 
     const selectDisplay = this.state.dataSets.map((ds, i) =>
       <OptionSet
@@ -63,32 +73,32 @@ class Options extends Component {
     )
 
     return (
-      <Row className="outline-a2">
+      <Row className={optionsClassNames}>
         <Col defs='col-xs-12'>
           <Row>
             <Col defs='col-xs'>
               <Heading tag="h2">Select Column Options</Heading>
-                { this.props.allHaveKeys &&
-                  <div>
-                    <Button
-                      label='Compare'
-                      accent
-                      onClick={this.handleClickCompare}
-                      type="submit"
-                    />
-                  </div>
+                {
+                  !!this.props.allHaveKeys &&
+                    <div>
+                      <Button
+                        label='Compare'
+                        accent
+                        onClick={this.handleClickCompare}
+                        type="submit" />
+                    </div>
                 }
             </Col>
             <Col defs='col-xs'>
               <Heading tag='h4' align='center'>
                 Row Unique Identifiers
-                <Button id="rowUniqueIdDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, uniqueFieldsText) }} />
+                <Button id="rowUniqueIdDisplayed" className={tipButtonClassNames} icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.props.active && this.toggleTip(e, uniqueFieldsText) }} />
               </Heading>
             </Col>
             <Col defs='col-xs'>
               <Heading tag='h4' align='center'>
                 Ignore Fields
-                <Button id="ignoreFieldsDisplayed" icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.toggleTip(e, ignoreFieldsText) }} />
+                <Button id="ignoreFieldsDisplayed" className={tipButtonClassNames} icon={<CircleQuestionIcon size="xsmall" />} onClick={(e) => { this.props.active && this.toggleTip(e, ignoreFieldsText) }} />
               </Heading>
             </Col>
           </Row>
@@ -119,6 +129,7 @@ let select = (state, props) => {
 
   return {
     mode: state.files.mode,
+    active: state.files.full,
     resultSets,
     fileData,
     dataSets,

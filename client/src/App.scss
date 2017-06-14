@@ -1,3 +1,5 @@
+// TODO: organize this crap!!!!!!!!!!!!!!!
+//
 @import "./styles/flexboxgrid";
 
 * {
@@ -134,4 +136,34 @@ $color-accent-light: #96e1d9;
 .divider {
   border-top: 1px solid rgba(0,0,0,.15);
   margin-top: 2em;
+}
+
+.dropzone {
+  border: 2px dashed rgb(102, 102, 102);
+  border-radius: 5px;
+  height: 98px;
+  width: 96px;
+  margin: 30px;
+  &.open {
+    cursor: pointer;
+    div {
+      text-align: center;
+      top: 33%;
+      position: relative;
+      line-height: 1em;
+      font-size: 15px;
+    }
+  }
+}
+
+.file-name {
+  word-wrap: break-word;
+}
+
+.options:not(.active), .results:not(.active) {
+  opacity: .4;
+}
+
+button.disabled {
+  cursor: default;
 }

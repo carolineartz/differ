@@ -17,7 +17,7 @@ class Import extends Component {
   render() {
     return (
       <Row className="outline-a1">
-        <Col defs="col-xs">
+        <Col defs="col-xs-12">
           <Heading tag="h2">Select Files</Heading>
         </Col>
         <Col defs="col-xs">
